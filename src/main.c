@@ -8,10 +8,15 @@
 #define GPIO_PIN GPIO_PIN_5
 #define TIMER4_OUTPUT_HZ 1000000U
 #define TIMER4_PERIOD 1U
+#define DATA_LENGTH 1U
 
 static TIM_HandleTypeDef htim4 = {0};
 void HAL_TIM_OC_MspInit(TIM_HandleTypeDef *htim);
 HAL_StatusTypeDef TIMER4_Init(void);
+
+uint32_t buffer[DATA_LENGTH] = {0}; // Dummy buffer for DMA
+
+void Error_Handler(void) {}
 
 int main() {
     HAL_Init();
@@ -20,8 +25,7 @@ int main() {
     }
 
     while(1){
-        HAL_GPIO_TogglePin(GPIO_PORT, GPIO_PIN);
-        HAL_Delay(500);
+        // Main loop
     }
 }
 
@@ -61,7 +65,7 @@ HAL_StatusTypeDef TIMER4_Init(void) {
     }
 
     // !! Start the output compare in DMA mode with a dummy buffer (NULL) and length 1
-    if (HAL_TIM_OC_Start_DMA(&htim4, TIM_CHANNEL_1, NULL, 1) != HAL_OK) {
+    if (HAL_TIM_OC_Start_DMA(&htim4, TIM_CHANNEL_1, buffer, DATA_LENGTH) != HAL_OK) {
         return HAL_ERROR;
     }
 
