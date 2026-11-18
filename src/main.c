@@ -49,7 +49,7 @@ HAL_StatusTypeDef TIMER4_Init(void) {
     htim4.Instance = TIM4;
     htim4.Init.Prescaler = (SystemCoreClock / TIMER4_OUTPUT_HZ) - 1;
     htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
-    htim4.Init.Period = TIMER4_PERIOD - 1;
+    htim4.Init.Period = TIMER4_PERIOD;
     htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
     
     if (HAL_TIM_OC_Init(&htim4) != HAL_OK) {
@@ -65,7 +65,7 @@ HAL_StatusTypeDef TIMER4_Init(void) {
     }
 
     // !! Start the output compare in DMA mode with a dummy buffer (NULL) and length 1
-    if (HAL_TIM_OC_Start_DMA(&htim4, TIM_CHANNEL_1, buffer, DATA_LENGTH) != HAL_OK) {
+    if (HAL_TIM_OC_Start(&htim4, TIM_CHANNEL_1) != HAL_OK) {
         return HAL_ERROR;
     }
 
