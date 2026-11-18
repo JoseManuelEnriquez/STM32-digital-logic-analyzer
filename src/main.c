@@ -10,22 +10,24 @@
 #define TIMER4_PERIOD 1U
 #define DATA_LENGTH 1U
 
-/* Timer handle for TIM4 */
-
+// ----------------------------------------------
+// Global variables
+// ----------------------------------------------
 static TIM_HandleTypeDef htim4 = {0};
+static DMA_HandleTypeDef hdma_gpio = {0};
 uint32_t buffer[DATA_LENGTH] = {0}; // Dummy buffer for DMA
 
-void HAL_TIM_OC_MspInit(TIM_HandleTypeDef *htim); 
+// ----------------------------------------------
+// Function Prototypes
+// ----------------------------------------------
 HAL_StatusTypeDef TIMER4_Init(void);
+HAL_StatusTypeDef DMA_GPIO_Init(void);
+void HAL_TIM_OC_MspInit(TIM_HandleTypeDef *htim); 
 void Error_Handler(void) {}
-
-/* DMA handle for GPIO */
-static DMA_HandleTypeDef hdma_gpio;
-HAL_StatusTypeDef configure_gpio_dma(void);
 
 int main() {
     HAL_Init();
-    if(configure_gpio_dma() != HAL_OK) {
+    if(DMA_GPIO_Init() != HAL_OK) {
         // Handle error
     }
     if(TIMER4_Init() != HAL_OK) {
@@ -36,8 +38,10 @@ int main() {
     }
 }
 
-
-/* TIM4 Msp Init */
+/** 
+ * @brief  Initializes the TIM4 peripheral for output compare in DMA mode.
+ * @param  htim: TIM handle pointer
+ */
 void HAL_TIM_OC_MspInit(TIM_HandleTypeDef *htim) {
     if (htim->Instance == TIM4) {
         __HAL_RCC_TIM4_CLK_ENABLE();
@@ -54,7 +58,10 @@ void HAL_TIM_OC_MspInit(TIM_HandleTypeDef *htim) {
     }
 }
 
-/* Initialize TIM4 for output compare in DMA mode */
+/** 
+ * @brief  Initializes the TIM4 peripheral for output compare in DMA mode.
+ * @param  htim: TIM handle pointer
+ */
 HAL_StatusTypeDef TIMER4_Init(void) {
     htim4.Instance = TIM4;
     htim4.Init.Prescaler = (SystemCoreClock / TIMER4_OUTPUT_HZ) - 1;
@@ -82,8 +89,12 @@ HAL_StatusTypeDef TIMER4_Init(void) {
     return HAL_OK;
 }
 
-/* Configure GPIO for DMA */
-HAL_StatusTypeDef configure_gpio_dma(void)
+/** 
+ * @brief  Initializes the GPIO for DMA.
+ * @param  None
+ * @retval HAL_StatusTypeDef
+ */
+HAL_StatusTypeDef DMA_GPIO_Init(void)
 {
     __HAL_RCC_GPIOA_CLK_ENABLE();
     __HAL_RCC_DMA1_CLK_ENABLE();
