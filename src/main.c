@@ -30,24 +30,29 @@ HAL_StatusTypeDef TIMER4_Init(void);
 HAL_StatusTypeDef DMA_GPIO_Init(void);
 void HAL_UART_MspInit(UART_HandleTypeDef *huart);
 void HAL_TIM_OC_MspInit(TIM_HandleTypeDef *htim); 
-void Error_Handler(void) {}
+
+void Error_Handler(const char *message) {
+    Debug_Log(message);
+}
 
 int main() {
     HAL_Init();
-    if (UART2_Init() != HAL_OK) {
-        Error_Handler();
-    }
-    if (Debug_Log("Debug logger ready") != HAL_OK) {
-        Error_Handler();
-    }
+    UART2_Init();
+    Debug_Log("Debug logger ready");
     if(DMA_GPIO_Init() != HAL_OK) {
-        // Handle error
+        Error_Handler("Failed to initialize DMA for GPIO");
     }
     if(TIMER4_Init() != HAL_OK) {
-        // Handle error
+        Error_Handler("Failed to initialize Timer 4");
     }
     while(1){
-        // Main loop
+        Debug_Log("Buffer DMA GPIO: ");
+        for(int i = 0; i < DATA_LENGTH; i++) {
+            char msg[50];
+            snprintf(msg, sizeof(msg), "buffer[%d] = %lu", i, buffer[i]);
+            Debug_Log(msg);
+        }
+        HAL_Delay(1000);
     }
 }
 
