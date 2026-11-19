@@ -8,3 +8,7 @@ STM32-based logic analyzer firmware for digital signal acquisition, event-trigge
 `f_out = f_TIM4 / (2 * (PSC + 1) * (ARR + 1))`
 
 The compare event enables a TIM4_CH1 DMA request on every transition (2 MHz). The DMA stream/channel itself must be configured separately by the application.
+
+## UART debug logger
+
+The debug logger uses USART2 at 115200 baud, 8 data bits, no parity, and 1 stop bit. On the NUCLEO-F411RE, USART2 is routed to the ST-LINK virtual COM port using PA2 (TX) and PA3 (RX). Call `Debug_Log("message")` to transmit a line ending in CRLF; transmission is blocking.
