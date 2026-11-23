@@ -31,3 +31,11 @@ HAL_StatusTypeDef DMA_GPIO_Init(void)
 
     return HAL_DMA_Init(&hdma_gpio);
 }
+
+HAL_StatusTypeDef DMA_Start(uint32_t src_address, uint32_t dst_address, uint32_t data_len){
+    return HAL_DMA_Start(&hdma_gpio, src_address, dst_address, data_len);
+}
+
+HAL_StatusTypeDef DMA_Stop(){
+    return HAL_DMA_Abort(&hdma_gpio);
+}
