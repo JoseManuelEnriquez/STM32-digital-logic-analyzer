@@ -18,6 +18,10 @@ HAL_StatusTypeDef UART2_Init(void) {
     return HAL_UART_Init(&huart2);
 }
 
+UART_HandleTypeDef *UART2_GetHandle(void) {
+    return &huart2;
+}
+
 /**
  * @brief Sends one debug message followed by a CRLF line ending.
  */
